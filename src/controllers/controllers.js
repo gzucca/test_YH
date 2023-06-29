@@ -13,18 +13,21 @@ const defaultController = (req, res) => {
 };
 
 const getPricesController = async (req, res) => {
-  const data = await services.getPrices();
   res.writeHead(200, {
-    "Content-Type": "application/json",
+    "Content-Type": "text/event-stream",
+    "Cache-Control": "no-cache",
+    Connection: "keep-alive",
   });
-  res.write(
-    JSON.stringify({
-      message: "GET Succesfull",
-      data,
-    })
-  );
-  res.end();
+  const data = await services.getPrices();
+    console.log(data);
+    res.write(`${JSON.stringify(data)}\n\n`)
+  setInterval(async () => {
+    const data = await services.getPrices();
+    console.log(data);
+    res.write(`${JSON.stringify(data)}\n\n`); // SSE data format
+  }, process.env.UPDATE_FREQUENCY);
 };
+
 
 module.exports = {
   defaultController,

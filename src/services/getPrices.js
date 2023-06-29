@@ -7,12 +7,13 @@ module.exports = async () => {
     const { symbol, bidPrice, askPrice } = data;
     const bidWCommission = bidPrice * (1 + Number(process.env.COMMISSION));
     const askWCommission = askPrice * (1 + Number(process.env.COMMISSION));
+    const midPrice = (bidWCommission + askWCommission) / 2;
     const returnedValues = {
       symbol,
       bidWCommission,
       askWCommission,
+      midPrice,
     };
-    console.log(data, returnedValues);
     return returnedValues;
   } catch (error) {
     console.log("Could not get prices from API:", error.message);
